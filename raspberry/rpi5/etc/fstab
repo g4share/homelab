@@ -1,0 +1,8 @@
+proc                  /proc            proc    defaults          0       0
+PARTUUID=9c5741a3-01  /boot/firmware   vfat    defaults          0       2
+PARTUUID=9c5741a3-02  /                ext4    defaults,noatime  0       1
+#
+# data
+/dev/nvme0n1p3        /mnt/data        ext4    defaults          0       2
+# docker
+/mnt/data/docker      /var/lib/docker  none    defaults,bind     0       0
