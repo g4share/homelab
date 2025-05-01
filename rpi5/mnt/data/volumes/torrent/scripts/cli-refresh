@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# =========================
+# Jellyfin config
+# =========================
+JELLYFIN_HOST="http://10.0.0.10:8096"
+if [[ -z "${JELLYFIN_API_KEY:-}" ]]; then
+  echo "Error: JELLYFIN_API_KEY is not set in the qBittorrent container." >&2
+  exit 1
+fi
+
+CATEGORY=""
+
+# =========================
+# Parse arguments
+# =========================
+if [[ $# -gt 0 ]]; then
+  if [[ "$1" != "--category" ]]; then
+    echo "Usage: $0 [--category \"Category Name\"]"
+    exit 2
+  fi
+
+  if [[ -z "$2" ]]; then
+    echo "Error: --category requires a value."
+    exit 2
+  fi
+
+  CATEGORY="$2"
+fi
+
+# =========================
+# Trigger library refresh
+# =========================
+if curl -fsS -X POST \
+    -H "Authorization: MediaBrowser Token=\"${JELLYFIN_API_KEY}\"" \
+    "${JELLYFIN_HOST}/Library/Refresh"
+then
+    echo "Jellyfin library refresh triggered."
+else
+    echo "Jellyfin library refresh failed."
+    exit 1
+fi
