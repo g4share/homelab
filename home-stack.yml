@@ -1,0 +1,82 @@
+# Home Stack - rpi5
+services:
+
+  traefik:
+    image: "traefik:v3.4.4"
+    container_name: "traefik"
+    restart: unless-stopped
+    environment:
+      - domain_name=${domain_name}
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=${letsencrypt_email}"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      #- "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      #- "--log.level=DEBUG"
+    ports:
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - '${data_path}/volumes/traefik:/etc/traefik'
+      - "letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      net_frontend:
+      net_backend_shared:
+
+  file-browser:
+    image: filebrowser/filebrowser:latest
+    container_name: file-browser
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.filebrowser.rule=Host(`share.${domain_name}`)"
+      - "traefik.http.routers.filebrowser.entrypoints=websecure"
+      - "traefik.http.routers.filebrowser.tls.certresolver=le"
+      - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
+    volumes:
+      - '${data_path}/volumes/file-browser/config/database.db:/database.db'
+      - '${data_path}/volumes/file-browser/data:/srv'
+    networks:
+      net_backend_shared:
+
+  torrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    environment:
+      - TZ='${timezone}'
+      - WEBUI_PORT=8080
+    volumes:
+      - '${data_path}/volumes/torrent/config:/config'
+      - '${data_path}/volumes/torrent/data:/downloads'
+    ports:
+      - 6881:6881
+      - 6881:6881/udp
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.torrent.rule=Host(`torrent.${domain_name}`)"
+      - "traefik.http.routers.torrent.tls.certresolver=le"
+      - "traefik.http.routers.torrent.entrypoints=websecure"
+      - "traefik.http.services.torrent.loadbalancer.server.port=8080"
+    networks:
+      net_backend_shared:
+
+
+volumes:
+
+  letsencrypt:
+
+networks:
+
+  net_frontend:
+    name: net_frontend
+
+  net_backend_shared:
+    name: net_backend_shared
