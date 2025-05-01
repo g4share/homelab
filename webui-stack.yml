@@ -1,0 +1,24 @@
+# Web UI Stack - rpi5
+services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    environment:
+      - OLLAMA_BASE_URL=http://10.0.0.10:11434
+      - ENABLE_AUTH=true
+    volumes:
+      - '${data_path}/volumes/open-webui:/app/backend/data'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openwebui.rule=Host(`ollama.${domain_name}`)"
+      - "traefik.http.routers.openwebui.entrypoints=websecure"
+      - "traefik.http.routers.openwebui.tls.certresolver=le"
+      - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
+    networks:
+      - net_backend_shared
+
+networks:
+  net_backend_shared:
+    external: true

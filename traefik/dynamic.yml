@@ -1,0 +1,15 @@
+http:
+  routers:
+    forward:
+      rule: 'Host(`jelly.{{ env "domain_name" }}`)'
+      service: jellyfin
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: le
+
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: http://10.0.0.10:8096
