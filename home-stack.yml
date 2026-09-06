@@ -51,6 +51,8 @@ services:
     container_name: qbittorrent
     restart: unless-stopped
     environment:
+      - PUID=1000
+      - PGID=1000
       - TZ='${timezone}'
       - WEBUI_PORT=8180
       - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
