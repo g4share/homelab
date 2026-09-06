@@ -53,6 +53,7 @@ services:
     environment:
       - TZ='${timezone}'
       - WEBUI_PORT=8180
+      - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
     volumes:
       - '${data_path}/volumes/torrent/config:/config'
       - '${data_path}/volumes/torrent/data:/downloads'
