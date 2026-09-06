@@ -52,12 +52,12 @@ services:
     restart: unless-stopped
     environment:
       - TZ='${timezone}'
-      - WEBUI_PORT=8080
+      - WEBUI_PORT=8180
     volumes:
       - '${data_path}/volumes/torrent/config:/config'
       - '${data_path}/volumes/torrent/data:/downloads'
     ports:
-      - 8180:8080
+      - 8180:8180
       - 6881:6881
       - 6881:6881/udp
     labels:
