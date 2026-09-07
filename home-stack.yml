@@ -68,7 +68,7 @@ services:
       - "traefik.http.routers.torrent.rule=Host(`torrent.${domain_name}`)"
       - "traefik.http.routers.torrent.tls.certresolver=le"
       - "traefik.http.routers.torrent.entrypoints=websecure"
-      - "traefik.http.services.torrent.loadbalancer.server.port=8080"
+      - "traefik.http.services.torrent.loadbalancer.server.port=8180"
     networks:
       net_backend_shared:
 
