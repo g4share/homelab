@@ -42,7 +42,8 @@ services:
       - "traefik.http.routers.filebrowser.tls.certresolver=le"
       - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
     volumes:
-      - '${data_path}/volumes/file-browser/config/database.db:/database.db'
+      - '${data_path}/volumes/file-browser/config:/config'
+      - '${data_path}/volumes/file-browser/database:/database'
       - '${data_path}/volumes/file-browser/data:/srv'
     networks:
       net_backend_shared:
