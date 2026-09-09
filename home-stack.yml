@@ -21,7 +21,7 @@ services:
       #- "--log.level=DEBUG"
     ports:
       - "443:443"
-      - "8080:8080"
+      - "10.0.0.15:8080:8080"
     volumes:
       - '${data_path}/volumes/traefik:/etc/traefik'
       - "letsencrypt:/letsencrypt"
