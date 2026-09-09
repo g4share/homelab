@@ -63,7 +63,6 @@ services:
       - '${data_path}/volumes/torrent/scripts:/scripts'
       - '${data_path}/volumes/torrent/data:/downloads'      
     ports:
-      - 8180:8180
       - 6881:6881
       - 6881:6881/udp
     labels:
