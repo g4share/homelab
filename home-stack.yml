@@ -60,7 +60,7 @@ services:
       - DOCKER_MODS=ghcr.io/vuetorrent/vuetorrent-lsio-mod:latest
     volumes:
       - '${data_path}/volumes/torrent/config:/config'
-      - '${data_path}/volumes/torrent/scripts:/scripts'
+      - '${data_path}/volumes/torrent/scripts:/scripts:ro'
       - '${data_path}/volumes/torrent/data:/downloads'      
     ports:
       - 6881:6881
