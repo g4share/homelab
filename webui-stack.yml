@@ -14,7 +14,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.openwebui.rule=Host(`ollama.${domain_name}`)"
       - "traefik.http.routers.openwebui.entrypoints=websecure"
-      - "traefik.http.routers.openwebui.tls.certresolver=le"
+      - "traefik.http.routers.openwebui.tls=true"
       - "traefik.http.services.openwebui.loadbalancer.server.port=8080"
     networks:
       - net_backend_shared

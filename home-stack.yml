@@ -7,14 +7,14 @@ services:
     restart: unless-stopped
     environment:
       - domain_name=${domain_name}
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     command:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.le.acme.email=${letsencrypt_email}"
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme-wildcard.json"
       - "--providers.file.filename=/etc/traefik/dynamic.yml"
       #- "--certificatesresolvers.le.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       #- "--log.level=DEBUG"
@@ -37,7 +37,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.filebrowser.rule=Host(`share.${domain_name}`)"
       - "traefik.http.routers.filebrowser.entrypoints=websecure"
-      - "traefik.http.routers.filebrowser.tls.certresolver=le"
+      - "traefik.http.routers.filebrowser.tls=true"
       - "traefik.http.services.filebrowser.loadbalancer.server.port=80"
     volumes:
       - '${data_path}/volumes/file-browser/config:/config'
@@ -67,7 +67,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.torrent.rule=Host(`torrent.${domain_name}`)"
-      - "traefik.http.routers.torrent.tls.certresolver=le"
+      - "traefik.http.routers.torrent.tls=true"
       - "traefik.http.routers.torrent.entrypoints=websecure"
       - "traefik.http.services.torrent.loadbalancer.server.port=8180"
     networks:
